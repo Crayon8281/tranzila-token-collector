@@ -14,7 +14,7 @@
     }
     .card {
       background: white; padding: 40px; border-radius: 16px;
-      text-align: center; max-width: 400px; width: 100%;
+      text-align: center; max-width: 500px; width: 100%;
       box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     }
     .check {
@@ -31,6 +31,20 @@
     }
     h1 { margin: 10px 0; color: #1a1a1a; font-size: 22px; }
     p { color: #666; line-height: 1.6; }
+    .debug {
+      margin-top: 30px; padding: 15px;
+      background: #f9fafb; border-radius: 8px;
+      text-align: right; font-size: 12px;
+      color: #374151; max-height: 200px; overflow-y: auto;
+      display: none;
+    }
+    .debug.show { display: block; }
+    .debug-toggle {
+      margin-top: 20px; background: none; border: none;
+      color: #999; font-size: 12px; cursor: pointer;
+      text-decoration: underline;
+    }
+    pre { margin: 0; white-space: pre-wrap; word-break: break-all; }
   </style>
 </head>
 <body>
@@ -39,6 +53,50 @@
     <h1>אמצעי התשלום נשמר בהצלחה</h1>
     <p>תודה! הפרטים שלך מאובטחים ויהיו בשימוש לחיובים עתידיים בלבד.</p>
     <p>ניתן לסגור את החלון.</p>
+
+    <button class="debug-toggle" onclick="document.getElementById('debug').classList.toggle('show')">
+      פרטים טכניים
+    </button>
+    <div id="debug" class="debug">
+      <pre id="debugContent"></pre>
+    </div>
   </div>
+
+  <script>
+    // ================== CONFIG ==================
+    const MAKE_WEBHOOK_URL = "https://hook.eu2.make.com/YOUR_WEBHOOK_ID";
+    // ============================================
+
+    const params = new URLSearchParams(window.location.search);
+    const data = {};
+    for (const [key, value] of params.entries()) {
+      data[key] = value;
+    }
+
+    document.getElementById('debugContent').textContent = JSON.stringify(data, null, 2);
+    console.log('Tranzila callback params:', data);
+
+    if (data.TranzilaTK || data.tk || data.Tempref) {
+      const payload = {
+        customer_id: data.myid || data.customer_id || '',
+        tranzila_token: data.TranzilaTK || data.tk || '',
+        tranzila_expdate: data.expdate || '',
+        tranzila_last_4: data.ccno ? String(data.ccno).slice(-4) : '',
+        tranzila_card_brand: data.cardtype || '',
+        response_code: data.Response || '',
+        confirmation_code: data.ConfirmationCode || '',
+        index: data.index || '',
+        raw: data
+      };
+
+      if (!MAKE_WEBHOOK_URL.includes('YOUR_WEBHOOK_ID')) {
+        fetch(MAKE_WEBHOOK_URL, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(payload)
+        }).catch(err => console.error('Webhook error:', err));
+      }
+    }
+  </script>
 </body>
 </html>
