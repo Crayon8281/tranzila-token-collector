@@ -64,14 +64,19 @@
       document.getElementById('frameWrapper').style.display = 'none';
       document.getElementById('noIdWarning').style.display = 'block';
     } else {
-      const tranzilaParams = new URLSearchParams({
+      const paramsObj = {
         sum: '1', currency: '1', cred_type: '1', tranmode: 'VK',
         nologo: '1', lang: 'il', u71: '1',
-        response_type: 'token', thtk: '1', myid: customerId,
-        notify_url_address: MAKE_WEBHOOK_URL
-      });
+        response_type: 'token', thtk: '1', myid: customerId
+      };
+      // מעבירים notify URL רק אם הוגדר webhook אמיתי
+      if (MAKE_WEBHOOK_URL && !MAKE_WEBHOOK_URL.includes('YOUR_WEBHOOK_ID')) {
+        paramsObj.notify_url_address = MAKE_WEBHOOK_URL;
+      }
+      const tranzilaParams = new URLSearchParams(paramsObj);
       const iframeUrl = `https://direct.tranzila.com/${TRANZILA_SUPPLIER}/iframenew.php?${tranzilaParams}`;
       document.getElementById('tranzilaFrame').src = iframeUrl;
+      console.log('iFrame URL:', iframeUrl);
     }
 
     window.addEventListener('message', async (event) => {
