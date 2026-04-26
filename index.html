@@ -70,10 +70,8 @@
         nologo: '1', lang: 'il', u71: '1',
         response_type: 'token', thtk: '1', myid: idNumber
       };
-      // מעבירים notify URL רק אם הוגדר webhook אמיתי
-      if (MAKE_WEBHOOK_URL && !MAKE_WEBHOOK_URL.includes('YOUR_WEBHOOK_ID')) {
-        paramsObj.notify_url_address = MAKE_WEBHOOK_URL;
-      }
+      // notify_url מושבת בכוונה — אנחנו שולחים ל-Make דרך postMessage עם id_number מה-URL,
+      // לא דרך טרנזילה (שתשלח את myid שהמשתמש הזין בטופס, שעלול להיות שונה)
       const tranzilaParams = new URLSearchParams(paramsObj);
       const iframeUrl = `https://direct.tranzila.com/${TRANZILA_SUPPLIER}/iframenew.php?${tranzilaParams}`;
       document.getElementById('tranzilaFrame').src = iframeUrl;
