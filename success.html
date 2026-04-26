@@ -76,28 +76,8 @@
     document.getElementById('debugContent').textContent = JSON.stringify(data, null, 2);
     console.log('Tranzila callback params:', data);
 
-    if (data.TranzilaTK || data.tk || data.Tempref) {
-      const payload = {
-        id_number: data.u1 || data.myid || '',   // u1 = ת.ז המקורית מהקישור
-        phone: data.u2 || '',                    // u2 = טלפון מהקישור
-        tranzila_token: data.TranzilaTK || data.tk || '',
-        tranzila_expdate: data.expdate || '',
-        tranzila_last_4: data.ccno ? String(data.ccno).slice(-4) : '',
-        tranzila_card_brand: data.cardtype || '',
-        response_code: data.Response || '',
-        confirmation_code: data.ConfirmationCode || '',
-        index: data.index || '',
-        raw: data
-      };
-
-      if (!MAKE_WEBHOOK_URL.includes('YOUR_WEBHOOK_ID')) {
-        fetch(MAKE_WEBHOOK_URL, {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify(payload)
-        }).catch(err => console.error('Webhook error:', err));
-      }
-    }
+    // הערה: שמירת הטוקן ל-Make מתבצעת ברקע דרך notify_url של Tranzila,
+    // לא מהדף הזה. הדף משמש רק כמשוב ויזואלי למשתמש.
   </script>
 </body>
 </html>

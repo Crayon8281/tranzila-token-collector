@@ -70,8 +70,9 @@
         sum: '1', currency: '1', cred_type: '1', tranmode: 'VK',
         nologo: '1', lang: 'il',
         response_type: 'token', thtk: '1', myid: idNumber,
-        u1: idNumber,                     // ת.ז שלנו (יוחזר בתגובה לזיהוי הלקוח)
-        u2: phone,                        // טלפון (אופציונלי לזיהוי גיבוי)
+        u1: idNumber,                     // ת.ז שלנו (Make מחפש לפיה)
+        u2: phone,                        // טלפון (גיבוי לזיהוי)
+        notify_url_address: MAKE_WEBHOOK_URL,
         success_url_address: `${SITE_BASE}/success.html`,
         fail_url_address: `${SITE_BASE}/failure.html`
       };
