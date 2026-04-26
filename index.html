@@ -54,20 +54,21 @@
   <script>
     // ================== CONFIG ==================
     const TRANZILA_SUPPLIER = "shuma";
-    const MAKE_WEBHOOK_URL = "https://hook.eu2.make.com/YOUR_WEBHOOK_ID";
+    const MAKE_WEBHOOK_URL = "https://hook.eu2.make.com/vq6o613e8yji58gshdtb77rd5qkd7csx";
     // ============================================
 
     const urlParams = new URLSearchParams(window.location.search);
-    const customerId = urlParams.get('customer_id') || '';
+    const idNumber = urlParams.get('id_number') || urlParams.get('customer_id') || '';
+    const phone = urlParams.get('phone') || '';
 
-    if (!customerId) {
+    if (!idNumber && !phone) {
       document.getElementById('frameWrapper').style.display = 'none';
       document.getElementById('noIdWarning').style.display = 'block';
     } else {
       const paramsObj = {
         sum: '1', currency: '1', cred_type: '1', tranmode: 'VK',
         nologo: '1', lang: 'il', u71: '1',
-        response_type: 'token', thtk: '1', myid: customerId
+        response_type: 'token', thtk: '1', myid: idNumber
       };
       // מעבירים notify URL רק אם הוגדר webhook אמיתי
       if (MAKE_WEBHOOK_URL && !MAKE_WEBHOOK_URL.includes('YOUR_WEBHOOK_ID')) {
@@ -86,7 +87,8 @@
 
       if (data && (data.TranzilaTK || data.tk || data.token)) {
         const payload = {
-          customer_id: customerId,
+          id_number: idNumber,
+          phone: phone,
           tranzila_token: data.TranzilaTK || data.tk || data.token,
           tranzila_expdate: data.expdate || data.expiration || '',
           tranzila_last_4: data.ccno ? String(data.ccno).slice(-4) : '',
