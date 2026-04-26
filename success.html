@@ -78,7 +78,8 @@
 
     if (data.TranzilaTK || data.tk || data.Tempref) {
       const payload = {
-        customer_id: data.myid || data.customer_id || '',
+        id_number: data.u1 || data.myid || '',   // u1 = ת.ז המקורית מהקישור
+        phone: data.u2 || '',                    // u2 = טלפון מהקישור
         tranzila_token: data.TranzilaTK || data.tk || '',
         tranzila_expdate: data.expdate || '',
         tranzila_last_4: data.ccno ? String(data.ccno).slice(-4) : '',

@@ -65,13 +65,16 @@
       document.getElementById('frameWrapper').style.display = 'none';
       document.getElementById('noIdWarning').style.display = 'block';
     } else {
+      const SITE_BASE = window.location.origin;
       const paramsObj = {
         sum: '1', currency: '1', cred_type: '1', tranmode: 'VK',
-        nologo: '1', lang: 'il', u71: '1',
-        response_type: 'token', thtk: '1', myid: idNumber
+        nologo: '1', lang: 'il',
+        response_type: 'token', thtk: '1', myid: idNumber,
+        u1: idNumber,                     // ת.ז שלנו (יוחזר בתגובה לזיהוי הלקוח)
+        u2: phone,                        // טלפון (אופציונלי לזיהוי גיבוי)
+        success_url_address: `${SITE_BASE}/success.html`,
+        fail_url_address: `${SITE_BASE}/failure.html`
       };
-      // notify_url מושבת בכוונה — אנחנו שולחים ל-Make דרך postMessage עם id_number מה-URL,
-      // לא דרך טרנזילה (שתשלח את myid שהמשתמש הזין בטופס, שעלול להיות שונה)
       const tranzilaParams = new URLSearchParams(paramsObj);
       const iframeUrl = `https://direct.tranzila.com/${TRANZILA_SUPPLIER}/iframenew.php?${tranzilaParams}`;
       document.getElementById('tranzilaFrame').src = iframeUrl;
